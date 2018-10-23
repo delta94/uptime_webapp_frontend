@@ -12,3 +12,10 @@ code {
   font-family: source-code-pro, Menlo, Monaco, Consolas, "Courier New",
     monospace;
 }
+
+.ui.header.segment {
+  background-color: #1a2533;
+  height: 100px;
+  color: white;
+  border-radius: 0;
+}

@@ -2,7 +2,7 @@ import React, { Component } from "react";
 import { Card, Form, Message } from "semantic-ui-react";
 
 export default class PossibilityForm extends Component {
-  state = { location: "", timeLimit: "" };
+  state = { location: "Home", timeLimit: "15" };
 
   handleLocationChange = (e, { value }) => this.setState({ location: value });
 

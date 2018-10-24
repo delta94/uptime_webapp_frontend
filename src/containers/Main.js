@@ -9,6 +9,7 @@ export default class Main extends Component {
     user: "",
     formToDisplay: "",
     suggestedPossibility: "",
+    currentActivity: "",
     allPossibilities: "",
     incompleteForm: false
   };
@@ -81,6 +82,35 @@ export default class Main extends Component {
     }
   };
 
+  handleAcceptorReject = status => {
+    let data = {
+      status,
+      possibility: this.state.suggestedPossibility
+    };
+    let token = localStorage.getItem("token");
+    if (token) {
+      // Create Activity
+      fetch(baseUrl + "/activities", {
+        method: "POST",
+        body: JSON.stringify(data),
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`
+        }
+      })
+        .then(res => res.json())
+        .then(activityOrPossibility => {
+          if (activityOrPossibility.status) {
+            this.setState({ activityOrPossibility });
+          }
+          if (!activityOrPossibility.status) {
+            this.setState({ suggestedPossibility: activityOrPossibility });
+          }
+        })
+        .catch(e => alert(e));
+    }
+  };
+
   render() {
     let {
       user,
@@ -114,7 +144,10 @@ export default class Main extends Component {
           />
         ) : null}
         {suggestedPossibility ? (
-          <PossibilityDisplay suggestedPossibility={suggestedPossibility} />
+          <PossibilityDisplay
+            suggestedPossibility={suggestedPossibility}
+            handleAcceptorReject={this.handleAcceptorReject}
+          />
         ) : null}
       </React.Fragment>
     );

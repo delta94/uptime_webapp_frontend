@@ -3,7 +3,7 @@ import { Card, Icon, Image } from "semantic-ui-react";
 
 export default class PossibilityDisplay extends Component {
   render() {
-    const { suggestedPossibility } = this.props;
+    const { suggestedPossibility, handleAcceptorReject } = this.props;
     const {
       name,
       description,
@@ -42,19 +42,21 @@ export default class PossibilityDisplay extends Component {
         </Card.Content>
         <Card.Content>
           <button
-            onClick={this.displayPossibilityForm}
+            onClick={suggestedPossibility => handleAcceptorReject("Accepted")}
             className="ui basic button"
           >
             Accept this Activity
           </button>
           <button
-            onClick={this.displayPossibilityForm}
+            onClick={suggestedPossibility => handleAcceptorReject("Rejected")}
             className="ui basic button"
           >
             Reject this Activity
           </button>
           <button
-            onClick={this.displayPossibilityForm}
+            onClick={suggestedPossibility =>
+              handleAcceptorReject("Rejected and Excluded")
+            }
             className="ui basic button"
           >
             Never Show this Activity Again

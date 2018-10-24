@@ -4,13 +4,23 @@ import { Card, Form, Message } from "semantic-ui-react";
 export default class PossibilityForm extends Component {
   state = { location: "Home", timeLimit: "15" };
 
-  handleLocationChange = (e, { value }) => this.setState({ location: value });
+  handleLocationChange = (e, { value }) => {
+    this.props.updateLocation(value);
+    this.setState({ location: value });
+  };
 
-  handleTimeLimitChange = (e, { value }) => this.setState({ timeLimit: value });
+  handleTimeLimitChange = (e, { value }) => {
+    this.props.updateTimeLimit(value);
+    this.setState({ timeLimit: value });
+  };
 
   render() {
     const { location, timeLimit } = this.state;
-    const { handleSubmitPossibilityForm, error } = this.props;
+    const {
+      suggestedPossibility,
+      handleSubmitPossibilityForm,
+      error
+    } = this.props;
 
     return (
       <Card fluid>
@@ -47,24 +57,26 @@ export default class PossibilityForm extends Component {
               />
               <Form.Radio
                 label="Between 15 and 30 minutes"
-                value="15-30"
-                checked={timeLimit === "15-30"}
+                value="30"
+                checked={timeLimit === "30"}
                 onChange={this.handleTimeLimitChange}
               />
               <Form.Radio
                 label="More than 30 minutes"
-                value="30+"
-                checked={timeLimit === "30+"}
+                value="60"
+                checked={timeLimit === "60"}
                 onChange={this.handleTimeLimitChange}
               />
             </Form.Group>
 
-            <Form.Button
-              basic
-              onClick={() => handleSubmitPossibilityForm(location, timeLimit)}
-            >
-              Suggest Activity
-            </Form.Button>
+            {!suggestedPossibility ? (
+              <Form.Button
+                basic
+                onClick={() => handleSubmitPossibilityForm(location, timeLimit)}
+              >
+                Suggest Activity
+              </Form.Button>
+            ) : null}
           </Form>
           {error ? (
             <Message warning>

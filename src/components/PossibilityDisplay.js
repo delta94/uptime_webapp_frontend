@@ -5,7 +5,51 @@ import CompletePossibilityButtons from "./CompletePossibilityButtons";
 import RatePossibility from "./RatePossibility";
 
 export default class PossibilityDisplay extends Component {
+  state = {
+    totalTime: 0,
+    seconds: "00", // responsible for the seconds
+    minutes: "00" // responsible for the minutes
+  };
+
+  interval;
+
+  start = () => {
+    this.interval = setInterval(this.tick, 1000);
+  };
+
+  stop = () => {
+    clearInterval(this.interval);
+  };
+
+  tick = () => {
+    let min = Math.floor(this.state.totalTime / 60);
+    let sec = this.state.totalTime - min * 60;
+
+    this.setState({ seconds: sec, minutes: min });
+
+    if (sec < 10) {
+      this.setState({
+        seconds: "0" + this.state.seconds
+      });
+    } else {
+      this.setState({
+        seconds: sec
+      });
+    }
+    if (min < 10) {
+      this.setState({
+        value: "0" + min
+      });
+    } else {
+      this.setState({
+        minutes: min
+      });
+    }
+    this.state.totalTime++;
+  };
   render() {
+    const { totalTime, seconds, minutes } = this.state;
+
     const {
       suggestedPossibility,
       handleAcceptorReject,
@@ -52,12 +96,18 @@ export default class PossibilityDisplay extends Component {
         {!currentActivity ? (
           <PossibilityAcceptOrRejectButtons
             handleAcceptorReject={handleAcceptorReject}
+            start={this.start}
+            tick={this.tick}
           />
         ) : null}
 
         {currentActivity && currentActivity.status === "Accepted" ? (
           <CompletePossibilityButtons
             handleCompleteActivity={handleCompleteActivity}
+            stop={this.stop}
+            totalTime={totalTime}
+            seconds={seconds}
+            minutes={minutes}
           />
         ) : null}
         {currentActivity &&

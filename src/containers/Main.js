@@ -115,7 +115,7 @@ export default class Main extends Component {
     }
   };
 
-  handleCompleteActivity = status => {
+  handleCompleteActivity = (status, totalTime) => {
     let data = {
       status
     };
@@ -161,6 +161,14 @@ export default class Main extends Component {
     }
   };
 
+  updateLocation = location => {
+    this.setState({ location });
+  };
+
+  updateTimeLimit = timeLimit => {
+    this.setState({ timeLimit });
+  };
+
   render() {
     let {
       user,
@@ -192,6 +200,9 @@ export default class Main extends Component {
           <PossibilityForm
             handleSubmitPossibilityForm={this.handleSubmitPossibilityForm}
             error={incompleteForm}
+            suggestedPossibility={suggestedPossibility}
+            updateLocation={this.updateLocation}
+            updateTimeLimit={this.updateTimeLimit}
           />
         ) : null}
         {suggestedPossibility ? (

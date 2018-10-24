@@ -1,26 +1,17 @@
 import React, { Component } from "react";
 import { Card, Rating } from "semantic-ui-react";
 
-export default class CompletePossibilityButtons extends Component {
-  state = { rating: 0 };
+export default class RatePossibility extends Component {
+  state = {};
 
-  handleChange = e => this.setState({ rating: e.target.value });
+  handleRate = (e, { rating, maxRating }) =>
+    this.setState({ rating, maxRating });
 
   render() {
-    const { rating } = this.state;
-
+    const { handleRatePossibility } = this.props;
     return (
       <div>
-        <div>Rating: {rating}</div>
-        <input
-          type="range"
-          min={0}
-          max={5}
-          value={rating}
-          onChange={this.handleChange}
-        />
-        <br />
-        <Rating rating={this.state.rating} maxRating={5} />
+        <Rating maxRating={5} onRate={this.handleRate} />
       </div>
     );
   }

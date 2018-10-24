@@ -3,11 +3,15 @@ import { Card } from "semantic-ui-react";
 
 export default class PossibilityAcceptOrRejectButtons extends Component {
   render() {
-    const { handleAcceptorReject } = this.props;
+    const { handleAcceptorReject, start } = this.props;
+
     return (
       <Card.Content>
         <button
-          onClick={suggestedPossibility => handleAcceptorReject("Accepted")}
+          onClick={suggestedPossibility => {
+            start();
+            handleAcceptorReject("Accepted");
+          }}
           className="ui basic button"
         >
           Accept this Activity
@@ -16,7 +20,7 @@ export default class PossibilityAcceptOrRejectButtons extends Component {
           onClick={suggestedPossibility => handleAcceptorReject("Rejected")}
           className="ui basic button"
         >
-          Reject this Activity
+          Reject this Activity and Suggestion Another
         </button>
         <button
           onClick={suggestedPossibility =>

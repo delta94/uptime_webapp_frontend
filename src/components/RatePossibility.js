@@ -4,14 +4,16 @@ import { Card, Rating } from "semantic-ui-react";
 export default class RatePossibility extends Component {
   state = {};
 
-  handleRate = (e, { rating, maxRating }) =>
+  handleRate = (e, { rating, maxRating }) => {
     this.setState({ rating, maxRating });
+    this.props.handleRatePossibility(rating);
+  };
 
   render() {
-    const { handleRatePossibility } = this.props;
     return (
       <div>
-        <Rating maxRating={5} onRate={this.handleRate} />
+        Rate this Activity:{" "}
+        <Rating icon="star" maxRating={5} onRate={this.handleRate} />
       </div>
     );
   }

@@ -8,7 +8,7 @@ export default class PossibilityDisplay extends Component {
   state = {
     totalTime: 0,
     seconds: "00", // responsible for the seconds
-    minutes: "00" // responsible for the minutes
+    minutes: "0" // responsible for the minutes
   };
 
   interval;
@@ -55,7 +55,8 @@ export default class PossibilityDisplay extends Component {
       handleAcceptorReject,
       currentActivity,
       handleCompleteActivity,
-      handleRatePossibility
+      handleRatePossibility,
+      handleSubmitPossibilityForm
     } = this.props;
     const {
       name,
@@ -93,26 +94,50 @@ export default class PossibilityDisplay extends Component {
             </React.Fragment>
           ) : null}{" "}
         </Card.Content>
+
         {!currentActivity ? (
-          <PossibilityAcceptOrRejectButtons
-            handleAcceptorReject={handleAcceptorReject}
-            start={this.start}
-            tick={this.tick}
-          />
-        ) : null}
+          <Card.Content>
+            <PossibilityAcceptOrRejectButtons
+              handleAcceptorReject={handleAcceptorReject}
+              start={this.start}
+              tick={this.tick}
+            />
+          </Card.Content>
+        ) : (
+          <button
+            className="ui basic button suggest-activity"
+            onClick={() => handleSubmitPossibilityForm()}
+          >
+            Suggest Another Activity
+          </button>
+        )}
 
         {currentActivity && currentActivity.status === "Accepted" ? (
-          <CompletePossibilityButtons
-            handleCompleteActivity={handleCompleteActivity}
-            stop={this.stop}
-            totalTime={totalTime}
-            seconds={seconds}
-            minutes={minutes}
-          />
+          <Card.Content>
+            <CompletePossibilityButtons
+              handleCompleteActivity={handleCompleteActivity}
+              stop={this.stop}
+              totalTime={totalTime}
+              seconds={seconds}
+              minutes={minutes}
+            />
+          </Card.Content>
         ) : null}
         {currentActivity &&
         currentActivity.status === "Accepted and Completed" ? (
-          <RatePossibility handleRatePossibility={handleRatePossibility} />
+          <React.Fragment>
+            <Card.Content>
+              <RatePossibility handleRatePossibility={handleRatePossibility} />
+            </Card.Content>
+            <Card.Content>
+              <button
+                className="ui basic button suggest-activity"
+                onClick={() => handleSubmitPossibilityForm()}
+              >
+                Suggest Another Activity
+              </button>
+            </Card.Content>
+          </React.Fragment>
         ) : null}
       </Card>
     );

@@ -38,11 +38,19 @@ export default class Main extends Component {
     this.setState({ formToDisplay: "Possibility Form" });
   };
 
-  handleSubmitPossibilityForm = (location, timeLimit) => {
+  handleSubmitPossibilityForm = (
+    location = this.state.location,
+    timeLimit = this.state.timeLimit
+  ) => {
     if (!location || !timeLimit) {
       this.setState({ incompleteForm: true });
     } else {
-      this.setState({ incompleteForm: false, location, timeLimit });
+      this.setState({
+        incompleteForm: false,
+        location,
+        timeLimit,
+        currentActivity: ""
+      });
       let data = {
         location: location,
         timeLimit: timeLimit
@@ -67,22 +75,22 @@ export default class Main extends Component {
     }
   };
 
-  handleFetchAllPossibilities = () => {
-    let token = localStorage.getItem("token");
-    if (token) {
-      // Fetch random possibility
-      fetch(baseUrl + "/possibilities", {
-        headers: {
-          Authorization: `Bearer ${token}`
-        }
-      })
-        .then(res => res.json())
-        .then(possibilities => {
-          this.setState({ allPossibilities: possibilities });
-        })
-        .catch(e => alert(e));
-    }
-  };
+  // handleFetchAllPossibilities = () => {
+  //   let token = localStorage.getItem("token");
+  //   if (token) {
+  //     // Fetch random possibility
+  //     fetch(baseUrl + "/possibilities", {
+  //       headers: {
+  //         Authorization: `Bearer ${token}`
+  //       }
+  //     })
+  //       .then(res => res.json())
+  //       .then(possibilities => {
+  //         this.setState({ allPossibilities: possibilities });
+  //       })
+  //       .catch(e => alert(e));
+  //   }
+  // };
 
   handleAcceptorReject = status => {
     let data = {
@@ -115,9 +123,10 @@ export default class Main extends Component {
     }
   };
 
-  handleCompleteActivity = (status, totalTime) => {
+  handleCompleteActivity = (status, time_expired) => {
     let data = {
-      status
+      status,
+      time_expired
     };
     let token = localStorage.getItem("token");
     if (token) {
@@ -212,6 +221,7 @@ export default class Main extends Component {
             currentActivity={currentActivity}
             handleCompleteActivity={this.handleCompleteActivity}
             handleRatePossibility={this.handleRatePossibility}
+            handleSubmitPossibilityForm={this.handleSubmitPossibilityForm}
           />
         ) : null}
       </React.Fragment>

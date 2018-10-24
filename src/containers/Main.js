@@ -8,6 +8,8 @@ export default class Main extends Component {
   state = {
     user: "",
     formToDisplay: "",
+    location: "",
+    timeLimit: "",
     suggestedPossibility: "",
     currentActivity: "",
     allPossibilities: "",
@@ -40,7 +42,7 @@ export default class Main extends Component {
     if (!location || !timeLimit) {
       this.setState({ incompleteForm: true });
     } else {
-      this.setState({ incompleteForm: false });
+      this.setState({ incompleteForm: false, location, timeLimit });
       let data = {
         location: location,
         timeLimit: timeLimit
@@ -85,6 +87,8 @@ export default class Main extends Component {
   handleAcceptorReject = status => {
     let data = {
       status,
+      location: this.state.location,
+      timeLimit: this.state.timeLimit,
       possibility: this.state.suggestedPossibility
     };
     let token = localStorage.getItem("token");
@@ -101,11 +105,57 @@ export default class Main extends Component {
         .then(res => res.json())
         .then(activityOrPossibility => {
           if (activityOrPossibility.status) {
-            this.setState({ activityOrPossibility });
+            this.setState({ currentActivity: activityOrPossibility });
           }
           if (!activityOrPossibility.status) {
             this.setState({ suggestedPossibility: activityOrPossibility });
           }
+        })
+        .catch(e => alert(e));
+    }
+  };
+
+  handleCompleteActivity = status => {
+    let data = {
+      status
+    };
+    let token = localStorage.getItem("token");
+    if (token) {
+      // Create Activity
+      fetch(baseUrl + `/activities/${this.state.currentActivity.id}`, {
+        method: "PATCH",
+        body: JSON.stringify(data),
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`
+        }
+      })
+        .then(res => res.json())
+        .then(activity => {
+          this.setState({ currentActivity: activity });
+        })
+        .catch(e => alert(e));
+    }
+  };
+
+  handleRatePossibility = rating => {
+    let data = {
+      rating
+    };
+    let token = localStorage.getItem("token");
+    if (token) {
+      // Create Activity
+      fetch(baseUrl + `/activities/${this.state.currentActivity.id}`, {
+        method: "PATCH",
+        body: JSON.stringify(data),
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`
+        }
+      })
+        .then(res => res.json())
+        .then(activity => {
+          this.setState({ currentActivity: activity });
         })
         .catch(e => alert(e));
     }
@@ -116,7 +166,8 @@ export default class Main extends Component {
       user,
       formToDisplay,
       incompleteForm,
-      suggestedPossibility
+      suggestedPossibility,
+      currentActivity
     } = this.state;
     return (
       <React.Fragment>
@@ -147,6 +198,9 @@ export default class Main extends Component {
           <PossibilityDisplay
             suggestedPossibility={suggestedPossibility}
             handleAcceptorReject={this.handleAcceptorReject}
+            currentActivity={currentActivity}
+            handleCompleteActivity={this.handleCompleteActivity}
+            handleRatePossibility={this.handleRatePossibility}
           />
         ) : null}
       </React.Fragment>

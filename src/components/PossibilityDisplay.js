@@ -1,9 +1,18 @@
 import React, { Component } from "react";
-import { Card, Icon, Image } from "semantic-ui-react";
+import { Card } from "semantic-ui-react";
+import PossibilityAcceptOrRejectButtons from "./PossibilityAcceptOrRejectButtons";
+import CompletePossibilityButtons from "./CompletePossibilityButtons";
+import RatePossibility from "./RatePossibility";
 
 export default class PossibilityDisplay extends Component {
   render() {
-    const { suggestedPossibility, handleAcceptorReject } = this.props;
+    const {
+      suggestedPossibility,
+      handleAcceptorReject,
+      currentActivity,
+      handleCompleteActivity,
+      handleRatePossibility
+    } = this.props;
     const {
       name,
       description,
@@ -40,28 +49,21 @@ export default class PossibilityDisplay extends Component {
             </React.Fragment>
           ) : null}{" "}
         </Card.Content>
-        <Card.Content>
-          <button
-            onClick={suggestedPossibility => handleAcceptorReject("Accepted")}
-            className="ui basic button"
-          >
-            Accept this Activity
-          </button>
-          <button
-            onClick={suggestedPossibility => handleAcceptorReject("Rejected")}
-            className="ui basic button"
-          >
-            Reject this Activity
-          </button>
-          <button
-            onClick={suggestedPossibility =>
-              handleAcceptorReject("Rejected and Excluded")
-            }
-            className="ui basic button"
-          >
-            Never Show this Activity Again
-          </button>
-        </Card.Content>
+        {!currentActivity ? (
+          <PossibilityAcceptOrRejectButtons
+            handleAcceptorReject={handleAcceptorReject}
+          />
+        ) : null}
+
+        {currentActivity && currentActivity.status === "Accepted" ? (
+          <CompletePossibilityButtons
+            handleCompleteActivity={handleCompleteActivity}
+          />
+        ) : null}
+        {currentActivity &&
+        currentActivity.status === "Accepted and Completed" ? (
+          <RatePossibility handleRatePossibility={handleRatePossibility} />
+        ) : null}
       </Card>
     );
   }

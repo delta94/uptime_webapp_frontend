@@ -11,6 +11,7 @@ export default class Main extends Component {
     location: "",
     timeLimit: "",
     suggestedPossibility: "",
+    rating: null,
     currentActivity: "",
     allPossibilities: "",
     incompleteForm: false
@@ -69,28 +70,31 @@ export default class Main extends Component {
           .then(res => res.json())
           .then(possibility => {
             this.setState({ suggestedPossibility: possibility });
+            this.fetchRating(possibility);
           })
           .catch(e => alert(e));
       }
     }
   };
 
-  // handleFetchAllPossibilities = () => {
-  //   let token = localStorage.getItem("token");
-  //   if (token) {
-  //     // Fetch random possibility
-  //     fetch(baseUrl + "/possibilities", {
-  //       headers: {
-  //         Authorization: `Bearer ${token}`
-  //       }
-  //     })
-  //       .then(res => res.json())
-  //       .then(possibilities => {
-  //         this.setState({ allPossibilities: possibilities });
-  //       })
-  //       .catch(e => alert(e));
-  //   }
-  // };
+  fetchRating = possibility => {
+    console.log("fetching rating");
+    let token = localStorage.getItem("token");
+    if (token) {
+      // Fetch user information
+      fetch(baseUrl + `/possibilityaverage/${possibility.id}`, {
+        headers: {
+          Authorization: `Bearer ${token}`
+        }
+      })
+        .then(res => res.json())
+        .then(rating => {
+          console.log(rating);
+          this.setState({ rating });
+        })
+        .catch(e => console.error(e));
+    }
+  };
 
   handleAcceptorReject = status => {
     let data = {
@@ -117,6 +121,7 @@ export default class Main extends Component {
           }
           if (!activityOrPossibility.status) {
             this.setState({ suggestedPossibility: activityOrPossibility });
+            this.fetchRating(activityOrPossibility);
           }
         })
         .catch(e => alert(e));
@@ -184,7 +189,8 @@ export default class Main extends Component {
       formToDisplay,
       incompleteForm,
       suggestedPossibility,
-      currentActivity
+      currentActivity,
+      rating
     } = this.state;
     return (
       <React.Fragment>
@@ -222,6 +228,7 @@ export default class Main extends Component {
             handleCompleteActivity={this.handleCompleteActivity}
             handleRatePossibility={this.handleRatePossibility}
             handleSubmitPossibilityForm={this.handleSubmitPossibilityForm}
+            rating={rating}
           />
         ) : null}
       </React.Fragment>

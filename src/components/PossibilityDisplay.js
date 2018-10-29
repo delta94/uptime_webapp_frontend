@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import { Card } from "semantic-ui-react";
+import { Card, Rating } from "semantic-ui-react";
 import PossibilityAcceptOrRejectButtons from "./PossibilityAcceptOrRejectButtons";
 import CompletePossibilityButtons from "./CompletePossibilityButtons";
 import RatePossibility from "./RatePossibility";
@@ -9,8 +9,7 @@ export default class PossibilityDisplay extends Component {
   state = {
     totalTime: 0,
     seconds: "00", // responsible for the seconds
-    minutes: "0", // responsible for the minutes
-    rating: null
+    minutes: "0" // responsible for the minutes
   };
 
   interval;
@@ -50,29 +49,8 @@ export default class PossibilityDisplay extends Component {
     this.state.totalTime++;
   };
 
-  componentDidMount() {
-    let token = localStorage.getItem("token");
-    if (token) {
-      // Fetch user information
-      fetch(
-        baseUrl + `/possibilityaverage/${this.props.suggestedPossibility.id}`,
-        {
-          headers: {
-            Authorization: `Bearer ${token}`
-          }
-        }
-      )
-        .then(res => res.json())
-        .then(rating => {
-          console.log(rating);
-          this.setState({ rating });
-        })
-        .catch(e => console.error(e));
-    }
-  }
-
   render() {
-    const { totalTime, seconds, minutes, rating } = this.state;
+    const { totalTime, seconds, minutes } = this.state;
 
     const {
       suggestedPossibility,
@@ -80,7 +58,8 @@ export default class PossibilityDisplay extends Component {
       currentActivity,
       handleCompleteActivity,
       handleRatePossibility,
-      handleSubmitPossibilityForm
+      handleSubmitPossibilityForm,
+      rating
     } = this.props;
     const {
       name,
@@ -92,6 +71,8 @@ export default class PossibilityDisplay extends Component {
       necessary_location,
       others_required
     } = suggestedPossibility;
+
+    let averageRating = "Average Rating: ";
     return (
       <Card fluid>
         <Card.Content>
@@ -118,7 +99,14 @@ export default class PossibilityDisplay extends Component {
             </React.Fragment>
           ) : null}{" "}
         </Card.Content>
-        <Card.Content>{rating}</Card.Content>
+        <Card.Content>
+          {rating ? averageRating : null}
+          {rating ? (
+            <Rating defaultRating={rating} maxRating={5} disabled />
+          ) : (
+            "This activity has not yet been rated. Accept this activity and be the first to rate it."
+          )}
+        </Card.Content>
 
         {!currentActivity ? (
           <Card.Content>

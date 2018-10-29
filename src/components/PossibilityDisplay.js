@@ -3,12 +3,14 @@ import { Card } from "semantic-ui-react";
 import PossibilityAcceptOrRejectButtons from "./PossibilityAcceptOrRejectButtons";
 import CompletePossibilityButtons from "./CompletePossibilityButtons";
 import RatePossibility from "./RatePossibility";
+import { baseUrl } from "../constants";
 
 export default class PossibilityDisplay extends Component {
   state = {
     totalTime: 0,
     seconds: "00", // responsible for the seconds
-    minutes: "0" // responsible for the minutes
+    minutes: "0", // responsible for the minutes
+    rating: null
   };
 
   interval;
@@ -47,8 +49,30 @@ export default class PossibilityDisplay extends Component {
     }
     this.state.totalTime++;
   };
+
+  componentDidMount() {
+    let token = localStorage.getItem("token");
+    if (token) {
+      // Fetch user information
+      fetch(
+        baseUrl + `/possibilityaverage/${this.props.suggestedPossibility.id}`,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`
+          }
+        }
+      )
+        .then(res => res.json())
+        .then(rating => {
+          console.log(rating);
+          this.setState({ rating });
+        })
+        .catch(e => console.error(e));
+    }
+  }
+
   render() {
-    const { totalTime, seconds, minutes } = this.state;
+    const { totalTime, seconds, minutes, rating } = this.state;
 
     const {
       suggestedPossibility,
@@ -94,6 +118,7 @@ export default class PossibilityDisplay extends Component {
             </React.Fragment>
           ) : null}{" "}
         </Card.Content>
+        <Card.Content>{rating}</Card.Content>
 
         {!currentActivity ? (
           <Card.Content>

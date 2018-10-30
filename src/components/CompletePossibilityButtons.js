@@ -32,7 +32,7 @@ export default class CompletePossibilityButtons extends Component {
           </button>
           <button
             onClick={() => {
-              handleCompleteActivity("Accepted but Not Completed", totalTime);
+              handleCompleteActivity("Accepted But Not Completed", totalTime);
               stop();
             }}
             className="ui basic button"

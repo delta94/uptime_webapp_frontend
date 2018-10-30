@@ -8,6 +8,8 @@ import { baseUrl } from "../constants";
 export default class Main extends Component {
   state = {
     user: "",
+    userStats: {},
+    userOverallStats: {},
     formToDisplay: "",
     location: "",
     timeLimit: "",
@@ -72,6 +74,7 @@ export default class Main extends Component {
           .then(possibility => {
             this.setState({ suggestedPossibility: possibility });
             this.fetchRating(possibility);
+            this.fetchUserStats(possibility);
           })
           .catch(e => alert(e));
       }
@@ -95,6 +98,45 @@ export default class Main extends Component {
         })
         .catch(e => console.error(e));
     }
+  };
+
+  fetchUserStats = possibility => {
+    console.log("fetching stats");
+
+    // For this possibility
+
+    let token = localStorage.getItem("token");
+    if (token) {
+      // Fetch user stats
+      fetch(baseUrl + `/userpossibilitystats/${possibility.id}`, {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`
+        }
+      })
+        .then(res => res.json())
+        .then(userStats => {
+          console.log(userStats);
+          this.setState({ userStats });
+        })
+        .catch(e => console.error(e));
+    }
+
+    // For all possibilities
+    fetch(baseUrl + `/useroverallstats`, {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`
+      }
+    })
+      .then(res => res.json())
+      .then(userOverallStats => {
+        console.log(userOverallStats);
+        this.setState({ userOverallStats });
+      })
+      .catch(e => console.error(e));
   };
 
   handleAcceptorReject = status => {
@@ -123,6 +165,7 @@ export default class Main extends Component {
           if (!activityOrPossibility.status) {
             this.setState({ suggestedPossibility: activityOrPossibility });
             this.fetchRating(activityOrPossibility);
+            this.fetchUserStats(activityOrPossibility);
           }
         })
         .catch(e => alert(e));
@@ -187,6 +230,8 @@ export default class Main extends Component {
   render() {
     let {
       user,
+      userStats,
+      userOverallStats,
       formToDisplay,
       incompleteForm,
       suggestedPossibility,
@@ -228,7 +273,12 @@ export default class Main extends Component {
           </Grid.Column>
           <Grid.Column>
             <Card fluid>
-              <UserProfile user={user} />
+              <UserProfile
+                user={user}
+                userStats={userStats}
+                userOverallStats={userOverallStats}
+                suggestedPossibility={suggestedPossibility}
+              />
             </Card>
           </Grid.Column>
         </Grid.Row>

@@ -116,14 +116,7 @@ export default class PossibilityDisplay extends Component {
               tick={this.tick}
             />
           </Card.Content>
-        ) : (
-          <button
-            className="ui basic button suggest-activity"
-            onClick={() => handleSubmitPossibilityForm()}
-          >
-            Suggest Another Activity
-          </button>
-        )}
+        ) : null}
 
         {currentActivity && currentActivity.status === "Accepted" ? (
           <Card.Content>
